@@ -22,7 +22,7 @@ namespace ShoppingList.Controllers
             return service;
         }
         // GET: Test
-        public ActionResult Index(string sortOrder, int id)
+        public ActionResult Index(string sortOrder, string searchString, int id)
         {
             var service = CreateListService();
             var model = service.GetShoppingListItems(id);
@@ -57,6 +57,11 @@ namespace ShoppingList.Controllers
                 default:
                     items = items.OrderBy(s => s.Priority);
                     break;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.ListContent.Contains(searchString));
             }
             return View(items.ToList());
         }

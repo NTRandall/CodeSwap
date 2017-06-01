@@ -3,7 +3,28 @@
 @{
     ViewBag.Title = "Create";
 }
+@{  WebImage photo = null;
+    var newFileName = "";
+    var imagePath = "";
+    var imageThumbPath = "";
 
+    if (IsPost)
+    {
+        photo = WebImage.GetImageFromRequest();
+        if (photo != null)
+        {
+            newFileName = Guid.NewGuid().ToString() + "_" +
+                          Path.GetFileName(photo.FileName);
+            imagePath = @"\content\img\" + newFileName;
+            photo.Save(@"~\" + imagePath);
+
+            imageThumbPath = @"content\img\thumbs\" + newFileName;
+            photo.Resize(width: 60, height: 60, preserveAspectRatio: true,
+                preventEnlarge: true);
+            photo.Save(@"~\" + imagePath);
+        }
+    }
+}
 <h2>Create</h2>
 
 

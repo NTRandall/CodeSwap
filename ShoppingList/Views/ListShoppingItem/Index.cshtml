@@ -5,9 +5,32 @@
 @{
     ViewBag.Title = "Index";
 }
+@{  WebImage photo = null;
+    var newFileName = "";
+    var imagePath = "";
+    var imageThumbPath = "";
 
+    if(IsPost){
+        photo = WebImage.GetImageFromRequest();
+        if(photo != null){
+            newFileName = Guid.NewGuid().ToString() + "_" +
+                          Path.GetFileName(photo.FileName);
+            imagePath = @"\content\img\" + newFileName;
+            photo.Save(@"~\" + imagePath);
+
+            imageThumbPath = @"content\img\thumbs\" + newFileName;
+            photo.Resize(width: 60, height: 60, preserveAspectRatio: true,
+                preventEnlarge: true);
+            photo.Save(@"~\" + imagePath);
+        }
+    }
+}
 <h2>Index</h2>
-
+<p>   
+    @using (Html.BeginForm()){    
+           <p> Title: @Html.TextBox("SearchString") <br />   
+               <input type="submit" value="Filter" /></p> 
+       } </p>
 <div class="btn btn-default">
     @Html.ActionLink("Create New", "Create", new { id = ViewBag.id })
 </div>
@@ -74,8 +97,21 @@
                                          <td>
                                                 @Html.DisplayFor(modelItem => item.NoteContent)                                            
                                          </td>
-                                           
+                                            <form action="" method="post" enctype="multipart/form-data">
+                                                <fieldset>
+                                                    <legend> Upload Image </legend>
+                                                    <label for="Image">Image</label>
+                                                    <input type="file" name="Image" />
+                                                    <br/>
+                                                    <input type="submit" value="Upload" />
+                                                </fieldset>
+                                            </form>                                          
+                                            @if(imagePath != ""){
+                                                <div class="result">
+                                                    <img src="@imagePath" alt="image" />
 
+                                                </div>
+                                            }
                                             <td>
                                                 <div class="pull-right action-buttons">
                                                     <a href="@Url.Action("Edit", new { id = item.shoppingItemId } )"><span class="glyphicon glyphicon-pencil"></span></a>
