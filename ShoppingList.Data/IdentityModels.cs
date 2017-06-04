@@ -34,5 +34,6 @@ namespace ShoppingList.Data
         public DbSet<Note> Notes { get; set; }
         public DbSet<ShoppingListItem> ShoppingListItems { get; set; }
         public DbSet<ListShopping> ShoppingLists { get; set; }
+        //public DbSet<StoreImage> StoreImages { get; set; }
     }
 }

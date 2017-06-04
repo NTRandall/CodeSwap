@@ -5,26 +5,11 @@
 @{
     ViewBag.Title = "Index";
 }
-@{  WebImage photo = null;
-    var newFileName = "";
-    var imagePath = "";
-    var imageThumbPath = "";
-
-    if(IsPost){
-        photo = WebImage.GetImageFromRequest();
-        if(photo != null){
-            newFileName = Guid.NewGuid().ToString() + "_" +
-                          Path.GetFileName(photo.FileName);
-            imagePath = @"\content\img\" + newFileName;
-            photo.Save(@"~\" + imagePath);
-
-            imageThumbPath = @"content\img\thumbs\" + newFileName;
-            photo.Resize(width: 60, height: 60, preserveAspectRatio: true,
-                preventEnlarge: true);
-            photo.Save(@"~\" + imagePath);
-        }
+@*@{  var imagePath= "";
+    if( Request["photoChoice"] != null){
+        imagePath = @"images\" + Request["photoChoice"];
     }
-}
+}*@
 <h2>Index</h2>
 <p>   
     @using (Html.BeginForm()){    
@@ -95,30 +80,28 @@
                                                 @Html.DisplayFor(modelItem => item.Priority)
                                             </td>
                                          <td>
-                                                @Html.DisplayFor(modelItem => item.NoteContent)                                            
+                                                @Html.DisplayFor(modelItem => item.NoteContent)    @*@if(imagePath != ""){
+                                                                                                       <img src="@imagePath" alt="Sample Image" width="300px" />
+                                                                                                   }*@                                        
                                          </td>
-                                            <form action="" method="post" enctype="multipart/form-data">
-                                                <fieldset>
-                                                    <legend> Upload Image </legend>
-                                                    <label for="Image">Image</label>
-                                                    <input type="file" name="Image" />
-                                                    <br/>
-                                                    <input type="submit" value="Upload" />
-                                                </fieldset>
-                                            </form>                                          
-                                            @if(imagePath != ""){
-                                                <div class="result">
-                                                    <img src="@imagePath" alt="image" />
-
-                                                </div>
-                                            }
+                                                                        
                                             <td>
                                                 <div class="pull-right action-buttons">
                                                     <a href="@Url.Action("Edit", new { id = item.shoppingItemId } )"><span class="glyphicon glyphicon-pencil"></span></a>
                                                     <a href="@Url.Action("Delete", new { id = item.shoppingItemId })" class="trash"><span class="glyphicon glyphicon-trash"></span></a>
                                                     <a href="@Url.Action("Details", new { id = item.shoppingItemId })" class="flag"><span class="glyphicon glyphicon-file"></span></a>                                                    
                                                 </div>
-
+                                                <div class="btn btn-primary">
+                                                    <input type="file" id="imageBrowse"/>
+                                                </div>
+                                                <div id="imgPreview" class="thumbnail" style="display: none">
+                                                    <img class="img-responsive" id="targetImg"/>
+                                                    <div class="caption">
+                                                        <a href="#" onclick="ClearPreview()"><i class="glyphicon glyphicon-trash"></i></a>
+                                                        <span id="description"></span>
+                                                    </div>
+                                                    <a href="#" class="btn btn-default" onclick="UploadImage()">Upload</a>
+                                                </div>
                                             </td>
                                         </tr>
                                     }
@@ -136,7 +119,70 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="btn btn-default">        
-        <a class="btn btn-default" href="@Url.Action("Delete", "ListShopping", new { id = ViewBag.id })">Delete</a>
+    <div class="btn btn-default">
+        <a class="btn btn-default" href="@Url.Action("Delete", "ListShopping", new {id = ViewBag.id})">Delete</a>
     </div>
+
+
+    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            $("#imageBrowse").change(function() {
+
+                var File = this.files;
+
+                if (File && File[0]) {
+                    ReadImage(File[0]);
+                }
+            });
+        });
+
+        var ReadImage = function(file) {
+
+            var reader = new FileReader;
+            var image = new Image;
+
+            reader.readAsDataURL(file);
+            reader.onload = function(_file) {
+
+                image.src = _file.target.result;
+                image.onload = function() {
+
+                    var height = this.height;
+                    var width = this.width;
+                    var type = file.type;
+                    var size = ~~(file.size / 1024) + "KB";
+
+                    $("#targetImg").attr('src', _file.target.result);
+                    $("#description").text("Size:" + size + "," + height + "X " + width + "," + type + "");
+                    $("#imgPreview").show();
+                }
+            }
+        }
+        var ClearPreview = function() {
+            $("#imageBrowse").val('');
+            $("#description").text('');
+            $("#imgPreview").hide();
+        }
+
+        var Uploadimage = function() {
+            var file = $("#imageBrowse").get(0).files;
+
+            var data = new FormData;
+            data.append("ImageFile", file[0]);
+            data.append("ProductName", "Apple");
+
+            $.ajax({
+                type: "Post",
+                url: "/Test/ImageUpload",
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function(response) {
+                    
+                }
+            });
+        }
+    </script>
 }

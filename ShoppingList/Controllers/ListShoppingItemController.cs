@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -106,6 +107,38 @@ namespace ShoppingList.Controllers
             ModelState.AddModelError("", "Your note could not be create.");
             return View(model);
         }
+
+
+        //public JsonResult ImageUpload(StoreImage model)
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    int imgId = 0;
+        //    var file = model.ImageFile;
+        //    byte[] imagebyte = null;
+        //    if (file != null)
+        //    {
+        //        file.SaveAs(Server.MapPath("/UploadImage/" +file.FileName));
+        //        BinaryReader reader = new BinaryReader(file.InputStream);
+        //        imagebyte = reader.ReadBytes(file.ContentLength);
+        //        StoreImage img = new StoreImage();
+        //        img.ImageTitle = file.FileName;
+        //        img.ImageByte = imagebyte;
+        //        img.ImagePath = "/UploadImage/" + file.FileName;
+        //        db.StoreImages.Add(img);
+        //        db.SaveChanges();
+        //        imgId = img.ImageId;
+        //    }
+        //    return Json(imgId, JsonRequestBehavior.AllowGet);
+        //}
+
+        //public ActionResult DisplayingImage(int imgID)
+            
+        //{
+        //    ApplicationDbContext db = new ApplicationDbContext();
+        //    var img = db.StoreImages.SingleOrDefault(x => x.ImageId == imgID);
+        //    return File(img.ImageByte, "image/jpg");
+        //}
+
         // GET: Test/Edit/5
         public ActionResult Edit(int? id)
         {
