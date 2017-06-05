@@ -75,7 +75,7 @@ namespace ShoppingList.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ShoppingListItem shoppingListItem = db.ShoppingListItems.Find(id);
+            ShoppingListItem shoppingListItem = db.ShoppingListItems.Include(s => s.Files).SingleOrDefault(s => s.shoppingItemId == id);
             if (shoppingListItem == null)
             {
                 return HttpNotFound();
