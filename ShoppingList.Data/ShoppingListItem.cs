@@ -5,7 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace ShoppingList.Models
+
+namespace ShoppingList.Data
 {
     public enum Priority
         {
@@ -36,7 +37,7 @@ namespace ShoppingList.Models
         [Display(Name = "Edited Date")]
         public DateTimeOffset? ModifiedUtc { get; set; }
 
-
+        public virtual ICollection<File> Files { get; set; }
     }
 
 }

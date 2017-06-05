@@ -1,8 +1,9 @@
 ﻿using ShoppingList.Data;
-using ShoppingList.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 
 namespace ShoppingList.Services
@@ -58,6 +59,7 @@ namespace ShoppingList.Services
                 CreatedUtc = DateTimeOffset.UtcNow
             };
 
+
             using (var ctx = new ApplicationDbContext())
             {
                 ctx.ShoppingListItems.Add(entity);
@@ -65,7 +67,28 @@ namespace ShoppingList.Services
                 return ctx.SaveChanges() == 1;
             }
         }
-       
+
+        public bool File(ShoppingListItem model, int id)
+        {
+            var entity = new ShoppingListItem
+            {
+                shoppingListId = id,
+                ListContent = model.ListContent,
+                Priority = model.Priority,
+                IsChecked = model.IsChecked,
+                NoteContent = model.NoteContent,
+                CreatedUtc = DateTimeOffset.UtcNow
+            };
+
+
+            using (var ctx = new ApplicationDbContext())
+            {
+                ctx.ShoppingListItems.Add(entity);
+
+                return ctx.SaveChanges() == 1;
+            }
+        }
+
         public IEnumerable<ListShopping> GetShoppingList()
         {
             using (var ctx = new ApplicationDbContext())

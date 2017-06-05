@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using ShoppingList.Data;
-using ShoppingList.Models;
+
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -34,6 +34,6 @@ namespace ShoppingList.Data
         public DbSet<Note> Notes { get; set; }
         public DbSet<ShoppingListItem> ShoppingListItems { get; set; }
         public DbSet<ListShopping> ShoppingLists { get; set; }
-        //public DbSet<StoreImage> StoreImages { get; set; }
+        public DbSet<File> Files { get; set; }
     }
 }

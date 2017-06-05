@@ -5,7 +5,8 @@ using System.Web;
 
 namespace ShoppingList.Data
 {
-    public class StoreImage
+    public enum FileType
     {
+        Avatar = 1, Photo
     }
 }

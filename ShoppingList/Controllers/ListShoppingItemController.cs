@@ -11,6 +11,8 @@ using ShoppingList.Data;
 using ShoppingList.Models;
 using ShoppingList.Services;
 using Microsoft.AspNet.Identity;
+using File = ShoppingList.Data.File;
+
 namespace ShoppingList.Controllers
 {
     public class ListShoppingItemController : Controller
@@ -91,12 +93,32 @@ namespace ShoppingList.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(ShoppingListItem model, int id)
+        public ActionResult Create(ShoppingListItem model, int id, HttpPostedFileBase upload)
         {
-            if (!ModelState.IsValid) return View(model);
+            if (!ModelState.IsValid)
+            {
+                
+                return View(model);
+            }
             var service = CreateListService();
             if (service.CreateListItem(model, id))
             {
+                if (upload != null && upload.ContentLength > 0)
+                {
+                    var avatar = new File
+                    {
+                        FileName = System.IO.Path.GetFileName(upload.FileName),
+                        FileType = FileType.Avatar,
+                        ContentType = upload.ContentType
+                    };
+                    using (var reader = new System.IO.BinaryReader(upload.InputStream))
+                    {
+                        avatar.Content = reader.ReadBytes(upload.ContentLength);
+                    }
+                     model.Files = new List<File> { avatar };
+                }
+                db.ShoppingListItems.Add(model);
+                db.SaveChanges();
                 //TempData is a dictionary that displays text per user in view then is removed only displaying the 
                 //Value of the key
                 TempData["SaveResult"] = "Your note was created";
@@ -104,40 +126,11 @@ namespace ShoppingList.Controllers
                 return RedirectToAction("Index", new { id = id });
             }
             //If it fails the ModelState.AddModelError would display that the note was not created in the validation summary
-            ModelState.AddModelError("", "Your note could not be create.");
+            ModelState.AddModelError("", "Your note could not be created.");
             return View(model);
         }
 
 
-        //public JsonResult ImageUpload(StoreImage model)
-        //{
-        //    ApplicationDbContext db = new ApplicationDbContext();
-        //    int imgId = 0;
-        //    var file = model.ImageFile;
-        //    byte[] imagebyte = null;
-        //    if (file != null)
-        //    {
-        //        file.SaveAs(Server.MapPath("/UploadImage/" +file.FileName));
-        //        BinaryReader reader = new BinaryReader(file.InputStream);
-        //        imagebyte = reader.ReadBytes(file.ContentLength);
-        //        StoreImage img = new StoreImage();
-        //        img.ImageTitle = file.FileName;
-        //        img.ImageByte = imagebyte;
-        //        img.ImagePath = "/UploadImage/" + file.FileName;
-        //        db.StoreImages.Add(img);
-        //        db.SaveChanges();
-        //        imgId = img.ImageId;
-        //    }
-        //    return Json(imgId, JsonRequestBehavior.AllowGet);
-        //}
-
-        //public ActionResult DisplayingImage(int imgID)
-            
-        //{
-        //    ApplicationDbContext db = new ApplicationDbContext();
-        //    var img = db.StoreImages.SingleOrDefault(x => x.ImageId == imgID);
-        //    return File(img.ImageByte, "image/jpg");
-        //}
 
         // GET: Test/Edit/5
         public ActionResult Edit(int? id)

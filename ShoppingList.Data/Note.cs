@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
-namespace ShoppingList.Models
+namespace ShoppingList.Data
 {
     public class Note
     {

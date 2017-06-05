@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ShoppingList.Models.ShoppingListItem>
+﻿@model IEnumerable<ShoppingList.Data.ShoppingListItem>
 
 
 
@@ -15,7 +15,7 @@
     @using (Html.BeginForm()){    
            <p> Title: @Html.TextBox("SearchString") <br />   
                <input type="submit" value="Filter" /></p> 
-       } </p>
+       } 
 <div class="btn btn-default">
     @Html.ActionLink("Create New", "Create", new { id = ViewBag.id })
 </div>
@@ -100,8 +100,9 @@
                                                         <a href="#" onclick="ClearPreview()"><i class="glyphicon glyphicon-trash"></i></a>
                                                         <span id="description"></span>
                                                     </div>
-                                                    <a href="#" class="btn btn-default" onclick="UploadImage()">Upload</a>
+                                                    <a href="#" class="btn btn-default" onclick="Uploadimage()">Upload</a>
                                                 </div>
+                                                <div class="col-md-2 thumbnail" id="uploadedImage"></div>
                                             </td>
                                         </tr>
                                     }
@@ -124,7 +125,7 @@
     </div>
 
 
-    <script src="~/Scripts/jquery-1.10.2.js"></script>
+    @*<script src="~/Scripts/jquery-1.10.2.js"></script>
     <script>
         $(document).ready(function() {
 
@@ -174,15 +175,20 @@
             data.append("ProductName", "Apple");
 
             $.ajax({
+
                 type: "Post",
-                url: "/Test/ImageUpload",
+                url: "/ShoppingList/ImageUpload",
                 data: data,
                 contentType: false,
                 processData: false,
-                success: function(response) {
-                    
+                success: function (response) {
+
+                    $("#uploadedImage").append('<img src="/UploadImage/' +
+                        response +
+                        '" class="img-responsive thumbnail"/>');
+
                 }
             });
         }
-    </script>
+    </script>*@
 }

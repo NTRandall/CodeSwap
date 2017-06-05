@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using ShoppingList.Data;
 
-namespace ShoppingList.Models
+namespace ShoppingList.Data
 {
     public class ListShopping
     {
@@ -25,6 +26,6 @@ namespace ShoppingList.Models
         [Display(Name = "Edited Date")]
         public DateTimeOffset? ModifiedUtc { get; set; }
 
-
+       
     }
 }
